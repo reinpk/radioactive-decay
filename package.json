@@ -1,0 +1,17 @@
+{
+  "name": "radioactive-decay-reinpk",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Models radioactive decay.",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "underscore": "*"
+  },
+  "component": {
+    "scripts": {
+      "radioactive-decay/index.js": "index.js"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "radioactive-decay",
+  "repo": "reinpk/radioactive-decay",
+  "description": "Models radioactive decay.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "keywords": [
+    "nuclear physics",
+    "radioactive waste",
+    "nuclear decay",
+    "radioactive decay",
+    "visualization"
+  ],
+  "dependencies": {
+    "component/clone": "*",
+    "component/map": "*",
+    "matthewp/keys": "*",
+    "avetisk/defaults": "*",
+    "segmentio/extend": "*",
+    "reinpk/zeroes": "*",
+    "reinpk/convert": "*",
+    "reinpk/isotope-data": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ],
+  "main": "index.js"
+}
