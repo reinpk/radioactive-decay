@@ -21,7 +21,10 @@
     "reinpk/convert": "*",
     "reinpk/isotope-data": "*"
   },
-  "development": {},
+  "development": {
+    "component/underscore": "*",
+    "reinpk/isotope-data": "*"
+  },
   "license": "MIT",
   "scripts": [
     "index.js"

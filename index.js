@@ -25,8 +25,6 @@ function RadioactiveDecay () {}
 
 extend(RadioactiveDecay.prototype, {
 
-    isotopeData : isotopeData,
-
     /**
      * Get the decay products for the given isotope.
      *
