@@ -250,7 +250,6 @@ extend(RadioactiveDecay.prototype, {
                 var seriesBq = profiles[i].radioactivity(years);
                 Bq = defaults(Bq, seriesBq);
                 Bq.total += seriesBq.total;
-                console.log(seriesBq);
             }
             return Bq;
         };
