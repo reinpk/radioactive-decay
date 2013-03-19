@@ -14,6 +14,7 @@
   "dependencies": {
     "component/clone": "*",
     "component/map": "*",
+    "component/each": "*",
     "matthewp/keys": "*",
     "avetisk/defaults": "*",
     "segmentio/extend": "*",

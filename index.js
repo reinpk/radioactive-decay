@@ -6,6 +6,7 @@
 var extend      = require('extend'),
     clone       = require('clone'),
     map         = require('map'),
+    each        = require('each'),
     keys        = require('keys'),
     defaults    = require('defaults'),
     zeroes      = require('zeroes'),
@@ -98,8 +99,14 @@ extend(RadioactiveDecay.prototype, {
      */
     chainProfile : function (isotope, charge) {
 
+        // First need to convert mass in kg to number of atoms
+        each(keys(charge), function (isotope) {
+            charge[isotope] /= isotopeData[isotope].molarMass;
+        });
+
         var chain = this.chain(isotope);
         var C = new Array(chain.length);
+        var molarMasses = [];
 
         // calculate lambda coefficients
         var lambda = map(chain, function (isotope) {
@@ -110,12 +117,14 @@ extend(RadioactiveDecay.prototype, {
         C[0] = zeroes(chain.length);
         C[0][0] = charge[isotope] || 0;
         charge[isotope] = 0;
+        molarMasses[0] = isotopeData[isotope].molarMass;
 
         // coefficients for the remaining rows
         for (var i = 1; i < chain.length; i++) {
 
             // initialize array to zeroes
             C[i] = zeroes(chain.length);
+            molarMasses[i] = isotopeData[chain[i]].molarMass;
 
             var sum = 0;
             for (var k = 0; k < i; k++) {
@@ -136,7 +145,7 @@ extend(RadioactiveDecay.prototype, {
             for (var i = 0; i < C.length; i++) {
                 var Ni = 0;
                 for (var k = 0; k < C[i].length; k++) {
-                    Ni += C[i][k] * Math.exp(-lambda[k] * years);
+                    Ni += molarMasses[i] * C[i][k] * Math.exp(-lambda[k] * years);
                 }
                 N[chain[i]] = Math.max(0, Ni);
                 N.total += N[chain[i]];
@@ -152,7 +161,7 @@ extend(RadioactiveDecay.prototype, {
                 for (var k = 0; k < C[i].length; k++) {
                     Ni += C[i][k] * Math.exp(-lambda[k] * years);
                 }
-                Bq[chain[i]] = convert.moles(lambda[i] * Math.max(0, Ni)) / (365.25 * 24 * 60 * 60);
+                Bq[chain[i]] = lambda[i] * Math.max(0, Ni) / (365.25 * 24 * 60 * 60);
                 Bq.total += Bq[chain[i]];
             }
             return Bq;
