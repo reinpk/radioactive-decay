@@ -77,7 +77,29 @@ describe('radioactive decay', function () {
             });
         });
 
-        it('has expected decay rate with child isotope in chain');
+        it('has expected decay rate with child isotope in chain', function () {
+
+            // Th-231 (25 hour halflife) decays to Pa-231 (32k year halflife)
+            // So we expect the conversion to Pa-231 to be pretty complete after 1 year
+            // but pretty much all the Pa-231 should still be around
+
+            // start with 1000 kg of Thorium-231
+            var startingMass = 1000;
+            var mass = radioactiveDecay.mass({
+                'Th-231' : startingMass
+            });
+
+            // one year later...
+            var remainingThorium = mass(1)['Th-231'];
+            expect(remainingThorium).to.be.lessThan(0.00000000001);
+
+            var freshProtactinium = mass(1)['Pa-231'];
+            var expectedProtactinium = startingMass / isotopeData['Th-231'].molarMass * isotopeData['Pa-231'].molarMass;
+
+            var error = Math.abs( (freshProtactinium - expectedProtactinium) / expectedProtactinium );
+            expect(error).to.be.lessThan(0.0001);
+
+        });
     });
 
 });
