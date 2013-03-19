@@ -80,12 +80,12 @@ extend(RadioactiveDecay.prototype, {
     },
 
     /**
-     * Get a single decay chain time-profile based on the initial charge.
+     * Get a single decay chain time-profile based on the initial mass charge.
      * 
      * This prepares a decay profile for the given `charge` distribution
      * of input isotopes. Only works for one starting chain, so if you want
      * to use it for an arbitrary charge profile you need to loop over all
-     * the possible chains (see the decayProfile function below).
+     * the possible chains (see the profile function below).
      * It returns a dictionary of functions that can compute
      * the distribution of isotopes or radiation at any given time.
      *
@@ -93,7 +93,7 @@ extend(RadioactiveDecay.prototype, {
      * for where to start this chain.
      * 
      * @param {Object} charge  - The dictionary of compact isotope names to initial
-     * charges (kilograms) of that isotope.
+     * mass charges (kilograms) of that isotope.
      * 
      */
     chainProfile : function (isotope, charge) {
@@ -130,7 +130,7 @@ extend(RadioactiveDecay.prototype, {
         }
 
         // return function that can evaluate the profile for any time
-        var concentrationProfile = function (years) {
+        var massProfile = function (years) {
             var N = {};
             N.total = 0;
             for (var i = 0; i < C.length; i++) {
@@ -159,13 +159,13 @@ extend(RadioactiveDecay.prototype, {
         };
 
         return {
-            concentration : concentrationProfile,
+            mass          : massProfile,
             radioactivity : radioactivityProfile
         };
     },
 
     /**
-     * Get a decay profile of isotope concentration for a starting charge of isotopes.
+     * Get a decay profile of isotope mass for a starting charge of isotopes.
      * 
      * For any given starting profile of isotopes, returns
      * a complete decay profile for all involved chains as a time-functions
@@ -174,16 +174,16 @@ extend(RadioactiveDecay.prototype, {
      * @param {Object} charge - The dictionary of compact isotope names (like `Pu-239')
      * to initial charges (kilograms) of that isotope.
      * 
-     * @return {Function} A function that can be used to calculate the concentration 
+     * @return {Function} A function that can be used to calculate the mass 
      * of isotopes at any given time (units of years) since the starting charge.
-     * The format of the object returned by the concentration function is
+     * The format of the object returned by the mass function is
      * {
      *     'Pu-239' : 123, // kilograms
      *     ...other isotopes...
      *     'total   : 12345 // kilograms
      * }
      */
-    concentration : function (charge) {
+    mass : function (charge) {
 
         var chargeClone = clone(charge);
         var isotopesAtStart = keys(chargeClone);
@@ -193,15 +193,15 @@ extend(RadioactiveDecay.prototype, {
             return self.chainProfile(isotope, chargeClone);
         });
 
-        // Merge the concentrations from each series
+        // Merge the masses from each series
         return function (years) {
-            var concentration = { total : 0 };
+            var mass = { total : 0 };
             for (var i = 0; i < profiles.length; i++) {
-                var seriesConcentration = profiles[i].concentration(years);
-                concentration = defaults(concentration, seriesConcentration);
-                concentration.total += seriesConcentration.total;
+                var seriesMass = profiles[i].mass(years);
+                mass = defaults(mass, seriesMass);
+                mass.total += seriesMass.total;
             }
-            return concentration;
+            return mass;
         };
     },
 

@@ -60,15 +60,14 @@ describe('radioactive decay', function () {
 
             _.each(_.keys(isotopeData), function (isotopeName) {
 
-                var initialConcentration = {};
-                initialConcentration[isotopeName] = 1;
+                var charge = {};
+                charge[isotopeName] = 1;
 
-                var concentration = radioactiveDecay.concentration(initialConcentration);
+                var mass = radioactiveDecay.mass(charge);
 
                 var halflife = isotopeData[isotopeName].halflife;
-
                 for (var halflives = 0; halflives < 5; halflives++) {
-                    var remaining = concentration(halflife*halflives)[isotopeName];
+                    var remaining = mass(halflife*halflives)[isotopeName];
                     var remainingExpected = Math.pow(0.5, halflives);
 
                     var error = Math.abs( (remaining - remainingExpected) / remainingExpected );
