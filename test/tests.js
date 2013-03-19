@@ -79,24 +79,25 @@ describe('radioactive decay', function () {
 
         it('has expected decay rate with child isotope in chain', function () {
 
-            // Th-231 (25 hour halflife) decays to Pa-231 (32k year halflife)
-            // So we expect the conversion to Pa-231 to be pretty complete after 1 year
-            // but pretty much all the Pa-231 should still be around
+            // Po-216 (0.1 second halflife) decays to Pb-212 (11 hour halflife)
+            // We expect the conversion to Pb-212 to be pretty complete after
+            // 5 seconds but basically all of the Pb-212 should still be around
 
-            // start with 1000 kg of Thorium-231
+            // start with 1000 kg of Polonium-216
             var startingMass = 1000;
             var mass = radioactiveDecay.mass({
-                'Th-231' : startingMass
+                'Po-216' : startingMass
             });
 
-            // one year later...
-            var remainingThorium = mass(1)['Th-231'];
-            expect(remainingThorium).to.be.lessThan(0.00000000001);
+            // 5 seconds later...
+            var after5Seconds = 5 / (365.25 * 24 * 60 * 60);
+            var remainingPolonium = mass(after5Seconds)['Po-216'];
+            expect(remainingPolonium).to.be.lessThan(0.0000001);
 
-            var freshProtactinium = mass(1)['Pa-231'];
-            var expectedProtactinium = startingMass / isotopeData['Th-231'].molarMass * isotopeData['Pa-231'].molarMass;
+            var freshLead = mass(after5Seconds)['Pb-212'];
+            var expectedLead = startingMass / isotopeData['Po-216'].molarMass * isotopeData['Pb-212'].molarMass;
 
-            var error = Math.abs( (freshProtactinium - expectedProtactinium) / expectedProtactinium );
+            var error = Math.abs( (freshLead - expectedLead) / expectedLead );
             expect(error).to.be.lessThan(0.0001);
 
         });
