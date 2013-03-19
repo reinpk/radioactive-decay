@@ -19,11 +19,13 @@
     "avetisk/defaults": "*",
     "segmentio/extend": "*",
     "reinpk/zeroes": "*",
+    "reinpk/error-fraction": "*",
     "reinpk/convert": "*",
     "reinpk/isotope-data": "*"
   },
   "development": {
     "component/underscore": "*",
+    "reinpk/error-fraction": "*",
     "reinpk/isotope-data": "*"
   },
   "license": "MIT",

@@ -2,6 +2,7 @@ describe('radioactive decay', function () {
 
     var radioactiveDecay = require('radioactive-decay'),
         isotopeData      = require('reinpk-isotope-data'),
+        errorFraction    = require('reinpk-error-fraction'),
         _                = require('component-underscore');
 
     // Decay Chains
@@ -70,7 +71,7 @@ describe('radioactive decay', function () {
                     var remaining = mass(halflife*halflives)[isotopeName];
                     var remainingExpected = Math.pow(0.5, halflives);
 
-                    var error = Math.abs( (remaining - remainingExpected) / remainingExpected );
+                    var error = errorFraction(remainingExpected, remaining);
                     expect(error).to.be.lessThan(0.0000001);
                 }
 
@@ -97,8 +98,38 @@ describe('radioactive decay', function () {
             var freshLead = mass(after5Seconds)['Pb-212'];
             var expectedLead = startingMass / isotopeData['Po-216'].molarMass * isotopeData['Pb-212'].molarMass;
 
-            var error = Math.abs( (freshLead - expectedLead) / expectedLead );
+            var error = errorFraction(expectedLead, freshLead);
             expect(error).to.be.lessThan(0.0001);
+
+        });
+
+        it('computes the right amount of radioactivity in simple cases', function () {
+
+            // data for specific radioactivity taken from http://www.wise-uranium.org/rup.html
+
+            // U-238
+            var radioactivity = radioactiveDecay.radioactivity({
+                'U-238' : 0.001
+            });
+            var specificActivityU238 = 12445; // Bq/g
+            var error = errorFraction(specificActivityU238, radioactivity(1)['U-238']);
+            expect(error).to.be.lessThan(0.001);
+
+            // U-235
+            radioactivity = radioactiveDecay.radioactivity({
+                'U-235' : 0.001
+            });
+            var specificActivityU235 = 80011; // Bq/g
+            error = errorFraction(specificActivityU235, radioactivity(1)['U-235']);
+            expect(error).to.be.lessThan(0.001);
+
+            // U-234
+            radioactivity = radioactiveDecay.radioactivity({
+                'U-234' : 0.001
+            });
+            var specificActivityU234 = 231300000; // Bq/g
+            error = errorFraction(specificActivityU234, radioactivity(1)['U-234']);
+            expect(error).to.be.lessThan(0.01);
 
         });
     });
